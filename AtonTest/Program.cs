@@ -1,5 +1,4 @@
 using AtonTest.DataContext;
-using AtonTest.Dto;
 using AtonTest.Helpers;
 using AtonTest.Interfaces;
 using AtonTest.Repositories;
@@ -7,11 +6,9 @@ using AtonTest.Services;
 using AtonTest.Validators;
 using EntityFrameworkCore.UnitOfWork.Extensions;
 using EntityFrameworkCore.UnitOfWork.Interfaces;
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using FluentValidation.Results;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,16 +63,19 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
+
+using (var scope = app.Services.CreateScope())
+{
     var userService = scope.ServiceProvider.GetRequiredService<IUsersService>();
     var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
     await AdminCreator.SeedAdminUserAsync(userService, unitOfWork);
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
