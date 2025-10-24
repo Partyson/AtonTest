@@ -2,3 +2,4 @@
 AtonTest/[Bb]in/
 AtonTest/[Oo]bj/
 .env
+*.http
