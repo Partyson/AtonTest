@@ -14,7 +14,8 @@ WORKDIR "/src/AtonTest"
 RUN dotnet build "AtonTest.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "AtonTest.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "AtonTest.csproj" -c Release -o /app/publish /p:UseAppHost=false \
+    && rm -rf /root/.nuget /tmp/* /var/cache/apk/*
 
 FROM base AS final
 WORKDIR /app
